@@ -318,7 +318,7 @@ class AppServices {
         SourceRequest(source: appModel.sourceCodeController.text),
       );
       appModel.analysisIssues.value = results.issues;
-      appModel.packageImports.value = results.packageImports;
+      appModel.packageImports.value = results.packageImports!;
     } catch (error) {
       appModel.analysisIssues.value = [
         AnalysisIssue(

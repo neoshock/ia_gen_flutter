@@ -99,37 +99,39 @@ class RunButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: 'Ejecutar',
-      waitDuration: tooltipDelay,
-      child: TextButton(
-        style: ButtonStyle(
-          shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0))),
-          backgroundColor: MaterialStateProperty.resolveWith(
-            (states) {
-              return const Color(0xff93a1ea);
-            },
+        message: 'Ejecutar',
+        waitDuration: tooltipDelay,
+        child: SizedBox(
+          height: 45,
+          child: TextButton(
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0))),
+              backgroundColor: MaterialStateProperty.resolveWith(
+                (states) {
+                  return Color.fromARGB(255, 72, 83, 138);
+                },
+              ),
+            ),
+            onPressed: onPressed,
+            child: const Row(
+              children: [
+                Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 20.0,
+                ),
+                SizedBox(
+                  width: 8.0,
+                ),
+                Text(
+                  'Ejecutar',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
           ),
-        ),
-        onPressed: onPressed,
-        child: const Row(
-          children: [
-            Icon(
-              Icons.play_arrow,
-              color: Colors.black,
-              size: 20.0,
-            ),
-            SizedBox(
-              width: 8.0,
-            ),
-            Text(
-              'Ejecutar',
-              style: TextStyle(color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    );
+        ));
   }
 }
 

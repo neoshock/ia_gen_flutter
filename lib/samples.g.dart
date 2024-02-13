@@ -6,6 +6,8 @@
 
 import 'package:collection/collection.dart';
 
+import 'utils.dart';
+
 class Sample {
   final String category;
   final String name;
@@ -33,6 +35,13 @@ class Samples {
     _sunflower,
   ];
 
+  static final getSampleSource = {
+    'fibonacci': _fibonacci.source,
+    'hello-world': _helloWorld.source,
+    'login': _counter.source,
+    'simple-dashboard': _sunflower.source,
+  };
+
   static final Map<String, List<Sample>> categories = {
     'Flutter': [
       _counter,
@@ -46,13 +55,8 @@ class Samples {
 }
 
 Map<String, String> _defaults = {
-  'dart': r'''
-void main() {
-  for (int i = 0; i < 10; i++) {
-    print('hello ${i + 1}');
-  }
-}
-''',
+  'dart': formatIaResponse(
+      "Aquí tienes un ejemplo de código Flutter para un formulario de solicitud de becas utilizando Material 3:\n\n```dart\nimport 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(MyApp());\n}\n\nclass MyApp extends StatelessWidget {\n  final Color primaryColor = const Color(0xFF6A1B9A);\n  final Color secondaryColor = const Color(0xFF9C27B0);\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      debugShowCheckedModeBanner: false,\n      theme: ThemeData(\n        colorScheme: ColorScheme.fromSwatch(\n          primarySwatch: Colors.deepPurple,\n        ),\n        appBarTheme: AppBarTheme(\n          backgroundColor: primaryColor,\n        ),\n      ),\n      home: Scaffold(\n        appBar: AppBar(\n          title: Text('Solicitud de Becas'),\n        ),\n        body: SingleChildScrollView(\n          padding: EdgeInsets.all(16.0),\n          child: Column(\n            crossAxisAlignment: CrossAxisAlignment.stretch,\n            children: [\n              Text(\n                'Información Personal',\n                style: TextStyle(\n                  fontSize: 18,\n                  fontWeight: FontWeight.bold,\n                  color: primaryColor,\n                ),\n              ),\n              SizedBox(height: 10),\n              TextFormField(\n                decoration: InputDecoration(\n                  labelText: 'Nombre completo',\n                ),\n              ),\n              SizedBox(height: 10),\n              TextFormField(\n                decoration: InputDecoration(\n                  labelText: 'Correo electrónico',\n                ),\n                keyboardType: TextInputType.emailAddress,\n              ),\n              SizedBox(height: 10),\n              TextFormField(\n                decoration: InputDecoration(\n                  labelText: 'Teléfono',\n                ),\n                keyboardType: TextInputType.phone,\n              ),\n              SizedBox(height: 20),\n              Text(\n                'Información Académica',\n                style: TextStyle(\n                  fontSize: 18,\n                  fontWeight: FontWeight.bold,\n                  color: primaryColor,\n                ),\n              ),\n              SizedBox(height: 10),\n              TextFormField(\n                decoration: InputDecoration(\n                  labelText: 'Institución educativa',\n                ),\n              ),\n              SizedBox(height: 10),\n              TextFormField(\n                decoration: InputDecoration(\n                  labelText: 'Carrera o programa académico',\n                ),\n              ),\n              SizedBox(height: 10),\n              TextFormField(\n                decoration: InputDecoration(\n                  labelText: 'Promedio general',\n                ),\n                keyboardType: TextInputType.number,\n              ),\n              SizedBox(height: 20),\n              ElevatedButton(\n                onPressed: () {\n                  // Lógica para enviar el formulario de solicitud\n                },\n                child: Text('Enviar Solicitud'),\n                style: ElevatedButton.styleFrom(\n                  primary: secondaryColor,\n                  textStyle: TextStyle(\n                    color: Colors.white,\n                  ),\n                ),\n              ),\n            ],\n          ),\n        ),\n      ),\n    );\n  }\n}\n```"),
   'flutter': r'''
 import 'package:flutter/material.dart';
 

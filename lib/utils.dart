@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: inference_failure_on_function_invocation
+
 import 'dart:async';
 
 import 'package:collection/collection.dart';
@@ -9,11 +11,160 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttering_phrases/fluttering_phrases.dart'
     as fluttering_phrases;
+import 'package:lottie/lottie.dart';
 
 import 'theme.dart';
 
 String pluralize(String word, int count) {
   return count == 1 ? word : '${word}s';
+}
+
+// Función para mostrar un dialog de carga
+void showLoadingDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        child: AlertDialog(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Lottie.asset('assets/animations/load_animation.json', width: 180),
+              Container(
+                margin: const EdgeInsets.only(left: 7),
+                child: Text(
+                  message,
+                  style: const TextStyle(
+                    fontSize: 36,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Future<void> showSuccessDialog(BuildContext context, String message) async {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) {
+      return Dialog(
+        child: SizedBox(
+          width:
+              MediaQuery.sizeOf(context).width * 0.45, // Define el ancho aquí
+          height:
+              MediaQuery.sizeOf(context).height * 0.5, // Define la altura aquí
+          child: AlertDialog(
+            backgroundColor: Colors.white, // Color de fondo del AlertDialog
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Lottie.asset(
+                  'assets/animations/success_animation.json',
+                  width: 180,
+                  repeat: false,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 7),
+                  child: Text(
+                    message,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.grey, // Cambia el color según necesites
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) {
+      return Dialog(
+        child: SizedBox(
+          width:
+              MediaQuery.sizeOf(context).width * 0.45, // Define el ancho aquí
+          height:
+              MediaQuery.sizeOf(context).height * 0.5, // Define la altura aquí
+          child: AlertDialog(
+            backgroundColor: Colors.white, // Color de fondo del AlertDialog
+            content: Column(
+              children: <Widget>[
+                Lottie.asset(
+                  'assets/animations/warning_animation.json',
+                  width: 180,
+                  repeat: false,
+                ),
+                SizedBox(
+                  child: Text(
+                    message,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.grey, // Cambia el color según necesites
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+String correctEncodingIssues(String text) {
+  // Mapeo de caracteres erróneos a sus equivalentes correctos
+  Map<String, String> replacements = {
+    'Ã¡': 'á', 'Ã©': 'é', 'Ã­': 'í', 'Ã³': 'ó', 'Ãº': 'ú',
+    'Ã±': 'ñ', 'Ã': 'Á', 'Ã‰': 'É', 'Ã': 'Í', 'Ã“': 'Ó', 'Ãš': 'Ú',
+    'Ã‘': 'Ñ', 'Â¿': '¿', 'Â¡': '¡',
+    // Agrega más reemplazos según sea necesario
+  };
+
+  replacements.forEach((key, value) {
+    text = text.replaceAll(key, value);
+  });
+
+  return text;
+}
+
+String formatIaResponse(String iaResponse) {
+  final RegExp exp = RegExp(r'```dart\n([\s\S]*?)\n```');
+  final RegExpMatch? match = exp.firstMatch(iaResponse);
+
+  if (match != null) {
+    String extractedCode = match.group(1)!;
+
+    // Corregir problemas de codificación
+    extractedCode = correctEncodingIssues(extractedCode);
+
+    // Ajustes adicionales de formato si son necesarios
+    extractedCode = extractedCode.replaceAllMapped(
+        RegExp(r'^', multiLine: true), (match) => '  ');
+
+    return extractedCode;
+  } else {
+    return '';
+  }
 }
 
 String titleCase(String phrase) {

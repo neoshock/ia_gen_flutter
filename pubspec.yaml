@@ -15,6 +15,7 @@ dependencies:
   go_router: ^12.1.0
   http: any
   json_annotation: ^4.8.1
+  lottie: ^3.0.0
   pointer_interceptor: ^0.9.0
   provider: ^6.0.0
   split_view: ^3.2.0
@@ -33,6 +34,9 @@ flutter:
   assets:
     - assets/dart_logo_128.png
     - assets/flutter_logo_192.png
+    - assets/animations/load_animation.json
+    - assets/animations/success_animation.json
+    - assets/animations/warning_animation.json
 
 dependency_overrides:
   dartpad_shared:

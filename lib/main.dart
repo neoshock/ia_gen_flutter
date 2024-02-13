@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:dartpad_shared/services.dart';
@@ -24,16 +26,11 @@ import 'keys.dart' as keys;
 import 'model.dart';
 import 'problems.dart';
 import 'samples.g.dart';
+import 'services/gpt_api_service.dart';
 import 'theme.dart';
 import 'utils.dart';
 import 'versions.dart';
 import 'widgets.dart';
-
-// TODO: explore using the monaco editor
-
-// TODO: show documentation on hover
-
-// TODO: implement find / find next
 
 const appName = 'FLUTTER GEN';
 
@@ -107,7 +104,7 @@ class _DartPadAppState extends State<DartPadApp> {
           });
         case _:
           setState(() {
-            themeMode = ThemeMode.dark;
+            themeMode = ThemeMode.light;
           });
       }
     });
@@ -191,7 +188,9 @@ class DartPadMainPage extends StatefulWidget {
 
 class _DartPadMainPageState extends State<DartPadMainPage> {
   late final SplitViewController mainSplitter;
-
+  final GptApiService gptApiService = GptApiService();
+  final _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   late AppModel appModel;
   late AppServices appServices;
 
@@ -231,6 +230,27 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
     super.dispose();
   }
 
+  Future<void> _handleGptRequest(String prompt) async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    showLoadingDialog(context, 'Generando código');
+    final response = await gptApiService.getGptResponse(prompt);
+    Navigator.of(context).pop();
+    if (response != null) {
+      final message = response.choices[0].message.content;
+      final formattedMessage = formatIaResponse(message);
+      if (formattedMessage.isEmpty) {
+        showErrorDialog(context, 'Hubo un problema al generar código');
+        return;
+      }
+      appModel.sourceCodeController.text = formattedMessage;
+      showSuccessDialog(context, 'Código generado');
+    } else {
+      showErrorDialog(context, 'Hubo un problema al generar código');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -249,35 +269,10 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                     SizedBox(width: denseSpacing),
                     ListSamplesWidget(),
                     SizedBox(width: defaultSpacing),
-                    // title widget
-                    // Expanded(
-                    //   child: Center(
-                    //     child: ValueListenableBuilder<String>(
-                    //       valueListenable: appModel.title,
-                    //       builder: (_, String value, __) => Text(value),
-                    //     ),
-                    //   ),
-                    // ),
-                    // const SizedBox(width: defaultSpacing),
                   ],
                 ),
               ),
               actions: [
-                // install sdk
-                // TextButton(
-                //   onPressed: () {
-                //     url_launcher.launchUrl(
-                //       Uri.parse('https://docs.flutter.dev/get-started/install'),
-                //     );
-                //   },
-                //   child: const Row(
-                //     children: [
-                //       Text('Install SDK'),
-                //       SizedBox(width: denseSpacing),
-                //       Icon(Icons.launch, size: 18),
-                //     ],
-                //   ),
-                // ),
                 const SizedBox(width: denseSpacing),
                 _BrightnessButton(
                   handleBrightnessChange: widget.handleBrightnessChanged,
@@ -296,93 +291,85 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                 gripSize: defaultGripSize,
                 controller: mainSplitter,
                 children: [
-                  Column(
-                    children: [
-                      // add a text field to enter a prompt for the user
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.all(denseSpacing),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.never,
-                                  labelText: 'Prompt',
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: defaultSpacing),
-                          SizedBox(
-                            height: 45,
-                            width: 100,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.colorScheme.secondary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                ),
-                              ),
-                              onPressed: () {},
-                              child: const Text('Generar',
-                                  style: TextStyle(color: Colors.white)),
-                            ),
-                          ),
-                          const SizedBox(width: defaultSpacing),
-                        ],
-                      ),
-                      Expanded(
-                        child: SectionWidget(
-                          child: Stack(
-                            children: [
-                              EditorWidget(
-                                appModel: appModel,
-                                appServices: appServices,
-                              ),
-                              Container(
-                                alignment: Alignment.bottomRight,
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // add a text field to enter a prompt for the user
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
                                 padding: const EdgeInsets.all(denseSpacing),
-                                child: StatusWidget(
-                                  status: appModel.editorStatus,
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor ingrese un prompt';
+                                    }
+                                    return null;
+                                  },
+                                  controller: _controller,
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.never,
+                                      labelText: 'Prompt',
+                                      contentPadding:
+                                          EdgeInsets.all(defaultGripSize)),
                                 ),
                               ),
-                            ],
+                            ),
+                            const SizedBox(width: defaultSpacing),
+                            SizedBox(
+                              height: 45,
+                              width: 100,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.colorScheme.secondary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6.0),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  _handleGptRequest(_controller.text);
+                                },
+                                child: const Text('Generar',
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ),
+                            const SizedBox(width: defaultSpacing),
+                          ],
+                        ),
+                        Expanded(
+                          child: SectionWidget(
+                            child: Stack(
+                              children: [
+                                EditorWidget(
+                                  appModel: appModel,
+                                  appServices: appServices,
+                                ),
+                                Container(
+                                  alignment: Alignment.bottomRight,
+                                  padding: const EdgeInsets.all(denseSpacing),
+                                  child: StatusWidget(
+                                    status: appModel.editorStatus,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      // ValueListenableBuilder<List<AnalysisIssue>>(
-                      //   valueListenable: appModel.analysisIssues,
-                      //   builder: (context, issues, _) {
-                      //     return ProblemsTableWidget(problems: issues);
-                      //   },
-                      // ),
-                    ],
+                      ],
+                    ),
                   ),
                   Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(denseSpacing),
+                        padding: const EdgeInsets.all(9),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            // Format action
-                            ValueListenableBuilder<bool>(
-                              valueListenable: appModel.formattingBusy,
-                              builder: (_, bool value, __) {
-                                return PointerInterceptor(
-                                  child: MiniIconButton(
-                                    icon: Icons.format_align_left,
-                                    tooltip: 'Format',
-                                    small: true,
-                                    onPressed: value ? null : _handleFormatting,
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(width: defaultSpacing),
                             // Run action
                             ValueListenableBuilder<bool>(
                               valueListenable: appModel.compilingBusy,
@@ -432,14 +419,6 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                                         );
                                       }),
                                 )
-                                // SizedBox(
-                                //   height: consoleHeight,
-                                //   child: ConsoleWidget(
-                                //     showDivider: mode == LayoutMode.both,
-                                //     textController:
-                                //         appModel.consoleOutputController,
-                                //   ),
-                                // ),
                               ],
                             );
                           });

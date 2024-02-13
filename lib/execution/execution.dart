@@ -10,7 +10,6 @@ import 'dart:ui_web' as ui_web;
 import 'package:flutter/material.dart';
 
 import '../model.dart';
-import '../theme.dart';
 import 'frame.dart';
 
 final Key _elementViewKey = UniqueKey();
@@ -81,7 +80,7 @@ class _ExecutionWidgetState extends State<ExecutionWidget> {
           ),
           padding: const EdgeInsets.all(8.0),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(45),
+            borderRadius: BorderRadius.circular(30),
             child: HtmlElementView(
               key: _elementViewKey,
               viewType: _viewType,
