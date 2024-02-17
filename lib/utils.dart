@@ -39,6 +39,7 @@ void showLoadingDialog(BuildContext context, String message) {
                 margin: const EdgeInsets.only(left: 7),
                 child: Text(
                   message,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 21,
                     color: Colors.white,
@@ -70,13 +71,14 @@ Future<void> showSuccessDialog(BuildContext context, String message) async {
               children: <Widget>[
                 Lottie.asset(
                   'assets/animations/success_animation.json',
-                  width: 180,
+                  width: 150,
                   repeat: false,
                 ),
                 Container(
                   margin: const EdgeInsets.only(left: 7),
                   child: Text(
                     message,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 21,
                       color: Colors.grey, // Cambia el color según necesites
@@ -108,11 +110,11 @@ void showErrorDialog(BuildContext context, String message) {
               children: <Widget>[
                 Lottie.asset(
                   'assets/animations/warning_animation.json',
-                  width: 180,
-                  repeat: false,
+                  width: 150,
                 ),
                 SizedBox(
                   child: Text(
+                    textAlign: TextAlign.center,
                     message,
                     style: const TextStyle(
                       fontSize: 21,
