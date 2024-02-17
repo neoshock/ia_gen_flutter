@@ -7,18 +7,18 @@ import '../model/response_model_gpt.dart';
 
 class GptApiService {
   final rootUrl = 'https://api.openai.com/v1/chat/completions';
-  final apiKey = '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';
+  final apiKey = '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';
 
   Future<ResponseModelGpt?> getGptResponse(String prompt) async {
     final RequestModelGPT requestModelGPT = RequestModelGPT(
-      'gpt-4',
+      'gpt-4-0125-preview',
       [
         RequestMessageGPT('system',
-            "You are a programming assistant specialized in Flutter. Generate code examples using Material 3, focusing exclusively on interface design and widget construction. Begin the code with a randomly generated color palette named 'theme', which includes 'primaryColor', 'secondaryHeaderColor', and 'scaffoldBackgroundColor' defined as hexadecimal values (e.g., 0xFF311B92). The generated code should be at least 200 lines long. No explanations or additional comments are required, only the code."),
+            "You are a programming assistant specialized in Flutter. Generate code examples that begin with defining a theme of colors similar to the provided example. The theme should be a Map<String, Color> named 'customTheme' and include colors for 'primary', 'primaryVariant', 'secondary', and 'scaffoldBackgroundColor', each defined as hexadecimal values. No explanations or additional comments are required, only the code."),
         RequestMessageGPT('system',
-            "The code must include the 'theme' color palette defined with hexadecimal colors at the beginning and follow with the application's structure, including the ThemeData configuration using Material 3. The designs should be complete, functional, and adaptive, aiming for around 200 to 300 lines. Use only material design components, without external libraries. Generate the code from start to end without any additional messages or comments, and include validations for nullable elements."),
+            "After defining the 'customTheme', use it to configure the ThemeData in a MaterialApp widget. The designs should be complete, functional, and adaptive, aiming for around 200 to 300 lines. Use only material design components, without external libraries. Generate the code from start to end without any additional messages or comments, and include validations for nullable elements. Ensure all interfaces use the colors from 'customTheme' consistently."),
         RequestMessageGPT('system',
-            "All interfaces should have input fields with rounded borders of 15 and use an ElevatedButton with a height of 45 for consistency. The color palette should be placed as a constant 'theme' right after 'void main()'."),
+            "All interfaces should have input fields with rounded borders of 15 and use an ElevatedButton with a height of 45 for consistency. The 'customTheme' should be placed right after 'void main()'."),
         RequestMessageGPT('user', prompt)
       ],
     );

@@ -14,6 +14,7 @@ import 'package:fluttering_phrases/fluttering_phrases.dart'
 import 'package:lottie/lottie.dart';
 
 import 'theme.dart';
+import 'widgets/custom_pallete_selector.dart';
 
 String pluralize(String word, int count) {
   return count == 1 ? word : '${word}s';
@@ -133,7 +134,7 @@ void showErrorDialog(BuildContext context, String message) {
 
 String correctEncodingIssues(String text) {
   // Mapeo de caracteres erróneos a sus equivalentes correctos
-  Map<String, String> replacements = {
+  final Map<String, String> replacements = {
     'Ã¡': 'á', 'Ã©': 'é', 'Ã­': 'í', 'Ã³': 'ó', 'Ãº': 'ú',
     'Ã±': 'ñ', 'Ã': 'Á', 'Ã‰': 'É', 'Ã': 'Í', 'Ã“': 'Ó', 'Ãš': 'Ú',
     'Ã‘': 'Ñ', 'Â¿': '¿', 'Â¡': '¡',
@@ -165,6 +166,30 @@ String formatIaResponse(String iaResponse) {
   } else {
     return '';
   }
+}
+
+String formatFlutterCodeWithPalette(String flutterCode, ColorPalette palette) {
+  // Convertir colores a formato hexadecimal
+  final List<String> hexColors = palette.colors.map((color) {
+    return 'Color(0xFF${color.value.toRadixString(16).padLeft(8, '0').toUpperCase().substring(2)})';
+  }).toList();
+
+  // Reemplazar los colores en el código
+  flutterCode = _replaceColorInCode(flutterCode, "'primary': ", hexColors[0]);
+  flutterCode =
+      _replaceColorInCode(flutterCode, "'primaryVariant': ", hexColors[1]);
+  flutterCode = _replaceColorInCode(flutterCode, "'secondary': ", hexColors[2]);
+  flutterCode = _replaceColorInCode(
+      flutterCode, "'scaffoldBackgroundColor': ", hexColors[3]);
+
+  return flutterCode;
+}
+
+String _replaceColorInCode(String code, String colorLabel, String newColor) {
+  final RegExp colorExp = RegExp(
+      '${RegExp.escape(colorLabel)}Color\\(0xFF[0-9a-fA-F]{6}\\)',
+      caseSensitive: false);
+  return code.replaceAll(colorExp, '$colorLabel$newColor');
 }
 
 String titleCase(String phrase) {

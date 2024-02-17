@@ -252,6 +252,17 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
     }
   }
 
+  Future<void> _onSelectedColorPalette(ColorPalette palette) async {
+    // validate if has code to format
+    if (appModel.sourceCodeController.text.isEmpty) {
+      showErrorDialog(
+          context, 'No hay código para aplicar la paleta de colores');
+      return;
+    }
+    appModel.sourceCodeController.text = formatFlutterCodeWithPalette(
+        appModel.sourceCodeController.text, palette);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -397,7 +408,8 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                           },
                           selectedModel: selectedPreviewMode),
                       const CustomTitleWidget(title: 'Paleta de colores'),
-                      const CustomPaletteSelector()
+                      CustomPaletteSelector(
+                          onPaletteChanged: _onSelectedColorPalette)
                     ],
                   ),
                   Stack(

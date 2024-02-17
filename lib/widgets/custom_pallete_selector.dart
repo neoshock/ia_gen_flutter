@@ -10,7 +10,10 @@ class ColorPalette {
 }
 
 class CustomPaletteSelector extends StatefulWidget {
-  const CustomPaletteSelector({Key? key}) : super(key: key);
+  final Function(ColorPalette) onPaletteChanged;
+
+  const CustomPaletteSelector({Key? key, required this.onPaletteChanged})
+      : super(key: key);
 
   @override
   _CustomPaletteSelectorState createState() => _CustomPaletteSelectorState();
@@ -44,6 +47,11 @@ class _CustomPaletteSelectorState extends State<CustomPaletteSelector> {
     isSelected: false,
   );
 
+  // Function to call the widget's callback with the selected palette
+  void _emitPaletteChange(ColorPalette palette) {
+    widget.onPaletteChanged(palette);
+  }
+
   // This function is called when a predefined palette is selected
   void _onPredefinedPaletteSelected(int index, bool? selected) {
     setState(() {
@@ -54,6 +62,7 @@ class _CustomPaletteSelectorState extends State<CustomPaletteSelector> {
       customPalette.isSelected = false; // Deselect custom palette
       palettes[index].isSelected = selected ?? false;
     });
+    _emitPaletteChange(palettes[index]);
   }
 
   // This function is called when the custom palette is selected
@@ -65,6 +74,9 @@ class _CustomPaletteSelectorState extends State<CustomPaletteSelector> {
       }
       customPalette.isSelected = selected ?? false;
     });
+    if (selected == true) {
+      _emitPaletteChange(customPalette);
+    }
   }
 
   // Function to open color picker and allow users to select a color
@@ -84,6 +96,7 @@ class _CustomPaletteSelectorState extends State<CustomPaletteSelector> {
                 setState(() {
                   customPalette.colors[colorIndex] = color;
                 });
+                _emitPaletteChange(customPalette);
               },
               pickerAreaHeightPercent: 0.8,
             ),
