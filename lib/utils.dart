@@ -34,13 +34,13 @@ void showLoadingDialog(BuildContext context, String message) {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Lottie.asset('assets/animations/load_animation.json', width: 180),
+              Lottie.asset('assets/animations/load_animation.json', width: 150),
               Container(
                 margin: const EdgeInsets.only(left: 7),
                 child: Text(
                   message,
                   style: const TextStyle(
-                    fontSize: 36,
+                    fontSize: 21,
                     color: Colors.white,
                   ),
                 ),
@@ -60,10 +60,9 @@ Future<void> showSuccessDialog(BuildContext context, String message) async {
     builder: (context) {
       return Dialog(
         child: SizedBox(
-          width:
-              MediaQuery.sizeOf(context).width * 0.45, // Define el ancho aquí
+          width: MediaQuery.sizeOf(context).width * 0.3, // Define el ancho aquí
           height:
-              MediaQuery.sizeOf(context).height * 0.5, // Define la altura aquí
+              MediaQuery.sizeOf(context).height * 0.45, // Define la altura aquí
           child: AlertDialog(
             backgroundColor: Colors.white, // Color de fondo del AlertDialog
             content: Column(
@@ -79,7 +78,7 @@ Future<void> showSuccessDialog(BuildContext context, String message) async {
                   child: Text(
                     message,
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 21,
                       color: Colors.grey, // Cambia el color según necesites
                     ),
                   ),
@@ -100,10 +99,9 @@ void showErrorDialog(BuildContext context, String message) {
     builder: (context) {
       return Dialog(
         child: SizedBox(
-          width:
-              MediaQuery.sizeOf(context).width * 0.45, // Define el ancho aquí
+          width: MediaQuery.sizeOf(context).width * 0.3, // Define el ancho aquí
           height:
-              MediaQuery.sizeOf(context).height * 0.5, // Define la altura aquí
+              MediaQuery.sizeOf(context).height * 0.45, // Define la altura aquí
           child: AlertDialog(
             backgroundColor: Colors.white, // Color de fondo del AlertDialog
             content: Column(
@@ -117,7 +115,7 @@ void showErrorDialog(BuildContext context, String message) {
                   child: Text(
                     message,
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 21,
                       color: Colors.grey, // Cambia el color según necesites
                     ),
                   ),

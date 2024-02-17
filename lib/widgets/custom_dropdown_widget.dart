@@ -15,10 +15,22 @@ class CustomDropdownButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.all(15),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(15),
         color: Colors.white,
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 7,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -29,7 +41,7 @@ class CustomDropdownButton extends StatelessWidget {
                   : null,
           icon: const Icon(Icons.arrow_drop_down),
           isExpanded: true,
-          hint: const Text('Selecciona un país'),
+          hint: const Text('Modo de previzualización'),
           items: models.map((option) {
             return DropdownMenuItem<String>(
               value: option,

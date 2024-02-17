@@ -16,21 +16,20 @@ import 'package:split_view/split_view.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:url_strategy/url_strategy.dart';
 import 'package:vtable/vtable.dart';
-
-import 'console.dart';
-import 'custom_iphone_widget.dart';
 import 'editor/editor.dart';
 import 'execution/execution.dart';
 import 'extensions.dart';
 import 'keys.dart' as keys;
 import 'model.dart';
-import 'problems.dart';
 import 'samples.g.dart';
 import 'services/gpt_api_service.dart';
 import 'theme.dart';
 import 'utils.dart';
 import 'versions.dart';
 import 'widgets.dart';
+import 'widgets/custom_dropdown_widget.dart';
+import 'widgets/custom_pallete_selector.dart';
+import 'widgets/custom_title_widget.dart';
 
 const appName = 'FLUTTER GEN';
 
@@ -193,6 +192,8 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
   final _formKey = GlobalKey<FormState>();
   late AppModel appModel;
   late AppServices appServices;
+  final List<String> previewModes = ['Web', 'iOS', 'Android'];
+  String? selectedPreviewMode;
 
   @override
   void initState() {
@@ -385,6 +386,18 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                           ],
                         ),
                       ),
+                      const CustomTitleWidget(
+                          title: 'Modo de previzualización'),
+                      CustomDropdownButton(
+                          models: previewModes,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedPreviewMode = value;
+                            });
+                          },
+                          selectedModel: selectedPreviewMode),
+                      const CustomTitleWidget(title: 'Paleta de colores'),
+                      const CustomPaletteSelector()
                     ],
                   ),
                   Stack(

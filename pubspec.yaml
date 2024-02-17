@@ -11,6 +11,7 @@ dependencies:
   dartpad_shared: any
   flutter:
     sdk: flutter
+  flutter_colorpicker: ^1.0.3
   fluttering_phrases: ^1.0.0
   go_router: ^12.1.0
   http: any
