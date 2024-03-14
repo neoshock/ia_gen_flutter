@@ -7,7 +7,7 @@ import '../model/response_model_gpt.dart';
 
 class GptApiService {
   final rootUrl = 'https://api.openai.com/v1/chat/completions';
-  final apiKey = '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';
+  final apiKey = '';
 
   Future<ResponseModelGpt?> getGptResponse(String prompt) async {
     final RequestModelGPT requestModelGPT = RequestModelGPT(

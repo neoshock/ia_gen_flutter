@@ -192,7 +192,7 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
   final _formKey = GlobalKey<FormState>();
   late AppModel appModel;
   late AppServices appServices;
-  final List<String> previewModes = ['Web', 'iOS', 'Android'];
+  final List<String> previewModes = ['iOS', 'Android'];
   String? selectedPreviewMode;
 
   @override
