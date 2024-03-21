@@ -23,19 +23,29 @@ class _CustomPaletteSelectorState extends State<CustomPaletteSelector> {
   // A list of color palettes to select from
   List<ColorPalette> palettes = [
     ColorPalette(
-      colors: [Colors.red, Colors.pink, Colors.blue, Colors.lightBlue],
-      isSelected: false,
-    ),
-    ColorPalette(
-      colors: [Colors.orange, Colors.redAccent, Colors.blueAccent, Colors.cyan],
+      colors: [
+        Color.fromARGB(255, 26, 88, 203),
+        Color.fromARGB(255, 241, 232, 235),
+        const Color.fromARGB(255, 35, 71, 100),
+        const Color.fromARGB(255, 251, 254, 255)
+      ],
       isSelected: false,
     ),
     ColorPalette(
       colors: [
-        Colors.deepOrange,
-        Colors.orangeAccent,
-        Colors.blueGrey,
-        Colors.indigo
+        const Color.fromARGB(255, 177, 122, 39),
+        const Color.fromARGB(255, 228, 199, 199),
+        Color.fromARGB(255, 238, 203, 139),
+        const Color.fromARGB(255, 255, 255, 255)
+      ],
+      isSelected: false,
+    ),
+    ColorPalette(
+      colors: [
+        Color.fromARGB(255, 19, 164, 29),
+        const Color.fromARGB(255, 179, 128, 61),
+        Color.fromARGB(255, 57, 138, 19),
+        const Color.fromARGB(255, 255, 255, 255)
       ],
       isSelected: false,
     ),
@@ -43,7 +53,12 @@ class _CustomPaletteSelectorState extends State<CustomPaletteSelector> {
 
   // The customizable color palette
   ColorPalette customPalette = ColorPalette(
-    colors: [Colors.red, Colors.pink, Colors.blue, Colors.lightBlue],
+    colors: [
+      Color.fromARGB(255, 64, 53, 191),
+      Color.fromARGB(255, 44, 56, 164),
+      const Color.fromARGB(255, 79, 107, 131),
+      Color.fromARGB(255, 251, 254, 255)
+    ],
     isSelected: false,
   );
 

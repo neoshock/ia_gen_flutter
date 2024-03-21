@@ -46,14 +46,13 @@ html.Element _iFrameFactory(int viewId) {
 
 class ExecutionWidget extends StatefulWidget {
   final AppServices appServices;
-
-  /// Whether the iframe ignores pointer events, for when gestures need to be
-  /// handled by the Flutter app.
+  final String selectedPreviewMode; // Agrega esto
   final bool ignorePointer;
 
   ExecutionWidget({
     required this.appServices,
     this.ignorePointer = false,
+    this.selectedPreviewMode = '',
     super.key,
   }) {
     _initViewFactory();
@@ -64,23 +63,117 @@ class ExecutionWidget extends StatefulWidget {
 }
 
 class _ExecutionWidgetState extends State<ExecutionWidget> {
+  String selectedPreviewMode = 'iPhone 12';
+
+  List<Widget> buildIPhone12Frame() {
+    return [
+      Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(45),
+          border: Border.all(color: Colors.black, width: 9),
+        ),
+      ),
+      Positioned(
+        top: 0,
+        child: Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15),
+            ),
+            color: Colors.black,
+          ),
+          width: MediaQuery.of(context).size.width * 0.1,
+          height: MediaQuery.of(context).size.height * 0.04,
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> buildIPhone14Frame() {
+    return [
+      Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(45),
+          border: Border.all(color: Colors.black, width: 9),
+        ),
+      ),
+      Positioned(
+        top: 15,
+        child: Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            color: Colors.black,
+          ),
+          width: MediaQuery.of(context).size.width * 0.07,
+          height: MediaQuery.of(context).size.height * 0.04,
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> buildPixel5Frame() {
+    return [
+      Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.black, width: 9),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> buildDefaultFrame() {
+    return [
+      Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(45),
+          border: Border.all(color: Colors.black, width: 9),
+        ),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     widget.appServices.executionService?.ignorePointer = widget.ignorePointer;
-
+    List<Widget> frameWidgets;
+    switch (widget.selectedPreviewMode) {
+      case 'iOS - iPhone 12':
+        frameWidgets = buildIPhone12Frame();
+        break;
+      case 'iOS - iPhone 14':
+        frameWidgets = buildIPhone14Frame();
+        break;
+      case 'Android - Pixel 5':
+        frameWidgets = buildPixel5Frame();
+        break;
+      default:
+        frameWidgets = buildDefaultFrame(); // o cualquier frame por defecto
+    }
     return Stack(
       alignment: Alignment.center,
       children: [
         Container(
           decoration: BoxDecoration(
             border: Border.all(color: theme.focusColor),
-            borderRadius: BorderRadius.circular(45),
+            borderRadius: BorderRadius.circular(
+                widget.selectedPreviewMode == 'Android - Pixel 5' ? 30 : 45),
             color: theme.colorScheme.surface,
           ),
           padding: const EdgeInsets.all(8.0),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(
+                widget.selectedPreviewMode == 'Android - Pixel 5' ? 15 : 30),
             child: HtmlElementView(
               key: _elementViewKey,
               viewType: _viewType,
@@ -93,25 +186,7 @@ class _ExecutionWidgetState extends State<ExecutionWidget> {
             ),
           ),
         ),
-        // create a iPhone frame
-        Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(45),
-            border: Border.all(color: Colors.black, width: 9),
-          ),
-        ),
-        Positioned(
-            top: 21,
-            child: Container(
-              width: 90,
-              height: 24,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(45),
-                color: Colors.transparent,
-              ),
-            ))
+        ...frameWidgets
       ],
     );
   }

@@ -33,6 +33,7 @@ class Samples {
     _helloWorld,
     _counter,
     _sunflower,
+    _solicitudBecas,
   ];
 
   static final getSampleSource = {
@@ -40,12 +41,14 @@ class Samples {
     'hello-world': _helloWorld.source,
     'login': _counter.source,
     'simple-dashboard': _sunflower.source,
+    'scholarship-application-form': _solicitudBecas.source,
   };
 
   static final Map<String, List<Sample>> categories = {
     'Flutter': [
       _counter,
       _sunflower,
+      _solicitudBecas,
     ],
   };
 
@@ -122,550 +125,496 @@ void main() {
 
 final _counter = Sample(
   category: 'Flutter',
-  name: 'Login',
-  id: 'login',
+  name: 'Formulario de Registro',
+  id: 'registro-formulario',
   source: r'''
-    import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
-    void main() {
-      runApp(const MyApp());
-    }
+void main() {
+  runApp(const MyApp());
+}
 
-    class MyApp extends StatelessWidget {
-      const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-      @override
-      Widget build(BuildContext context) {
-        return const MaterialApp(
-          home: MainLogin(),
-        );
-      }
-    }
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Social Media Inspired Registration Form',
+      theme: ThemeData(
+        brightness: Brightness.light,
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFF99a4e7),
+          secondary: Color(0xFF6775b2),
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.blue[800], // Facebook button color
+        ),
+      ),
+      home: const SocialMediaRegistrationForm(),
+    );
+  }
+}
 
-    class MainLogin extends StatelessWidget {
-      const MainLogin({Key? key}) : super(key: key);
+class SocialMediaRegistrationForm extends StatelessWidget {
+  const SocialMediaRegistrationForm({Key? key}) : super(key: key);
 
-      @override
-      Widget build(BuildContext context) {
-        return Scaffold(
-          body: Stack(
-            children: <Widget>[
-              Container(
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            'https://i.pinimg.com/originals/c2/47/e9/c247e913a0214313045a8a5c39f8522b.jpg'))),
-              ),
-              Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      const CircleAvatar(
-                        radius: 58.0,
-                        child: Text('Travel'),
-                      ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.person,
-                              color: Colors.white,
-                            ),
-                            hintStyle: TextStyle(color: Colors.white),
-                            filled: true,
-                            fillColor: Colors.black45,
-                            hintText: 'Username'),
-                      ),
-                      const SizedBox(
-                        height: 10.0,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                            filled: true,
-                            prefixIcon: Icon(Icons.lock, color: Colors.white),
-                            hintStyle: TextStyle(color: Colors.white),
-                            fillColor: Colors.black45,
-                            hintText: 'Password'),
-                      ),
-                      const SizedBox(
-                        height: 15.0,
-                      ),
-                      FlatButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'Forgot your Password?',
-                            style: TextStyle(color: Colors.white),
-                          )),
-                      const SizedBox(
-                        height: 15.0,
-                      ),
-                      RaisedButton(
-                        onPressed: () {},
-                        color: Colors.redAccent,
-                        textColor: Colors.white,
-                        child: const Padding(
-                            padding: EdgeInsets.all(15.0), child: Text('LOGIN')),
-                      ),
-                      const SizedBox(
-                        height: 10.0,
-                      ),
-                      RaisedButton(
-                        onPressed: () {},
-                        color: Colors.grey,
-                        textColor: Colors.white,
-                        child: const Padding(
-                            padding: EdgeInsets.all(15.0), child: Text('REGISTER')),
-                      ),
-                      const SizedBox(
-                        height: 12.0,
-                      ),
-                      const Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Divider(
-                              color: Colors.white,
-                              height: 8.0,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          Text(
-                            'OR',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          Expanded(
-                            child: Divider(
-                              color: Colors.white,
-                              height: 8.0,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 100),
+            const Text(
+              'Registrarse',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 40),
+            _buildTextField(context, 'Nombres', Icons.person),
+            const SizedBox(height: 20),
+            _buildTextField(context, 'Correo Electronico', Icons.email),
+            const SizedBox(height: 20),
+            _buildTextField(context, 'Contraseña', Icons.lock,
+                isPassword: true),
+            const SizedBox(height: 40),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
+                onPressed: () {
+                  // Registration logic
+                },
+                child:
+                    const Text('Registrarse', style: TextStyle(fontSize: 20)),
               ),
-            ],
-          ),
-        );
-      }
-    }
+            ),
+            const SizedBox(height: 30),
+            // or line
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text('O', style: TextStyle(fontSize: 16)),
+                ),
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+            TextButton.icon(
+              // Use pre-built social icons for ease, such as FontAwesomeIcons when using third-party packages
+              icon: const Icon(Icons.facebook, color: Colors.blue),
+              label: const Text('Registrarse con Facebook'),
+              onPressed: () {
+                // Sign up with Facebook logic
+              },
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
 
-    class FlatButton extends StatelessWidget {
-      final VoidCallback onPressed;
-      final Widget child;
-
-      const FlatButton({Key? key, required this.onPressed, required this.child})
-          : super(key: key);
-
-      @override
-      Widget build(BuildContext context) {
-        return SizedBox(
-          height: 50.0,
-          child: ElevatedButton(
-            onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0))),
-            child: child,
-          ),
-        );
-      }
-    }
-
-    class RaisedButton extends StatelessWidget {
-      final VoidCallback onPressed;
-      final Widget child;
-      final Color color;
-      final Color textColor;
-
-      const RaisedButton(
-          {Key? key,
-          required this.onPressed,
-          required this.child,
-          required this.color,
-          required this.textColor})
-          : super(key: key);
-
-      @override
-      Widget build(BuildContext context) {
-        return SizedBox(
-          height: 50.0,
-          child: ElevatedButton(
-            onPressed: onPressed,
-            style: ElevatedButton.styleFrom(
-                backgroundColor: color,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0))),
-            child: child,
-          ),
-        );
-      }
-    }
+  Widget _buildTextField(BuildContext context, String label, IconData icon,
+      {bool isPassword = false}) {
+    return TextField(
+      obscureText: isPassword,
+      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+        prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.primary),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary, width: 2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(25),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.secondary, width: 2),
+        ),
+      ),
+    );
+  }
+}
 ''',
 );
 
 final _sunflower = Sample(
   category: 'Flutter',
-  name: 'SimpleDashboard',
-  id: 'simple-dashboard',
+  name: 'Formulario de Concurso de Fotografía',
+  id: 'photography-contest-form',
   source: r'''
-    import 'package:flutter/material.dart';
-    import 'dart:math' as math;
+import 'package:flutter/material.dart';
 
-    void main() {
-      runApp(const MyApp());
-    }
+void main() {
+  runApp(const MyApp());
+}
 
-    class MyApp extends StatelessWidget {
-      const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-      @override
-      Widget build(BuildContext context) {
-        return const MaterialApp(
-          home: Dashboard(),
-        );
-      }
-    }
-
-    class Dashboard extends StatelessWidget {
-      const Dashboard({super.key});
-
-      @override
-      Widget build(BuildContext context) {
-        return Scaffold(
-            appBar: AppBar(
-              title: const Text('Dashboard'),
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Concurso de Fotografía',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white70,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blueAccent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            body: const SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    CardWidget(
-                      title: 'Total Users',
-                      value: '100',
-                      icon: Icons.people,
-                      color: Colors.blue,
-                    ),
-                    SizedBox(height: 16.0),
-                    ChartWidget(),
-                    SizedBox(height: 16.0),
-                    LineChartWidget(),
-                    SizedBox(height: 16.0),
-                    CircularProgressWidget(),
-                  ],
-                ),
-              ),
-            ));
-      }
-    }
-
-    class CardWidget extends StatelessWidget {
-      final String title;
-      final String value;
-      final IconData icon;
-      final Color color;
-
-      const CardWidget({
-        super.key,
-        required this.title,
-        required this.value,
-        required this.icon,
-        required this.color,
-      });
-
-      @override
-      Widget build(BuildContext context) {
-        return Card(
-          color: color,
-          elevation: 5.0,
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+          ),
+        ),
+        scaffoldBackgroundColor: Colors.white,
+        cardTheme: CardTheme(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(16.0),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  icon,
-                  size: 40.0,
-                  color: Colors.white,
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  title,
-                  style: const TextStyle(color: Colors.white, fontSize: 18.0),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    }
+          elevation: 5,
+          margin: const EdgeInsets.all(8),
+        ),
+      ),
+      home: const PhotographyContestForm(),
+    );
+  }
+}
 
-    class ChartWidget extends StatelessWidget {
-      const ChartWidget({super.key});
+class PhotographyContestForm extends StatefulWidget {
+  const PhotographyContestForm({Key? key}) : super(key: key);
 
-      @override
-      Widget build(BuildContext context) {
-        return Container(
-          height: 240,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Sales Bar Chart',
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 12.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    BarWidget(label: 'Jan', value: 50),
-                    BarWidget(label: 'Feb', value: 80),
-                    BarWidget(label: 'Mar', value: 120),
-                    BarWidget(label: 'Apr', value: 90),
-                    BarWidget(label: 'May', value: 110),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    }
+  @override
+  _PhotographyContestFormState createState() => _PhotographyContestFormState();
+}
 
-    class LineChartWidget extends StatelessWidget {
-      const LineChartWidget({super.key});
+class _PhotographyContestFormState extends State<PhotographyContestForm> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _photoUrlController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-      @override
-      Widget build(BuildContext context) {
-        return Container(
-          height: 240,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Sales Line Chart',
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 12.0),
-                LineWidget(),
-              ],
-            ),
-          ),
-        );
-      }
-    }
+  bool _isPhotoValid = false;
 
-    class BarWidget extends StatelessWidget {
-      final String label;
-      final double value;
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _photoUrlController.dispose();
+    super.dispose();
+  }
 
-      const BarWidget({super.key, required this.label, required this.value});
+  void _validatePhoto(String value) {
+    // Simulate a photo validation
+    setState(() {
+      _isPhotoValid = Uri.tryParse(value)?.hasAbsolutePath ?? false;
+    });
+  }
 
-      @override
-      Widget build(BuildContext context) {
-        return Column(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Registro - Concurso de Fotografía',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
           children: [
-            Text(label),
-            const SizedBox(height: 8.0),
-            Container(
-              width: 20.0,
-              height: value,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-          ],
-        );
-      }
-    }
-
-    class LineWidget extends StatelessWidget {
-      const LineWidget({super.key});
-
-      @override
-      Widget build(BuildContext context) {
-        return Container(
-          width: double.infinity,
-          height: 150.0,
-          child: CustomPaint(
-            painter: LinePainter(),
-          ),
-        );
-      }
-    }
-
-    class LinePainter extends CustomPainter {
-      @override
-      void paint(Canvas canvas, Size size) {
-        final Paint paint = Paint()
-          ..color = Colors.green
-          ..strokeWidth = 4.0
-          ..strokeCap = StrokeCap.round;
-
-        final double startX = 20.0;
-        final double endX = size.width - 20.0;
-        final double startY = size.height - 20.0;
-        final double endY = 20.0;
-
-        canvas.drawLine(Offset(startX, startY), Offset(endX, endY), paint);
-      }
-
-      @override
-      bool shouldRepaint(CustomPainter oldDelegate) {
-        return false;
-      }
-    }
-
-    class CircularProgressWidget extends StatelessWidget {
-      const CircularProgressWidget({Key? key}) : super(key: key);
-
-      @override
-      Widget build(BuildContext context) {
-        return Container(
-          height: 240,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Custom Circular Indicator',
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 30.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
                   children: [
-                    CustomCircularProgress(),
-                    SizedBox(width: 15.0),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _LegendItem(color: Colors.blue, text: 'Total'),
-                        SizedBox(height: 15.0),
-                        _LegendItem(color: Colors.green, text: 'Completed'),
-                      ],
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Nombre Completo',
+                        prefixIcon: Icon(Icons.person),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, introduce tu nombre completo.';
+                        }
+                        return null;
+                      },
                     ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _photoUrlController,
+                      decoration: const InputDecoration(
+                        labelText: 'URL de la Foto',
+                        prefixIcon: Icon(Icons.link),
+                      ),
+                      onChanged: _validatePhoto,
+                      validator: (value) {
+                        if (!_isPhotoValid) {
+                          return 'Por favor, introduce una URL válida.';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            // Submit the form
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Formulario Enviado'),
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text('Registrarse'),
+                      ),
+                    )
                   ],
-                )
-              ],
-            ),
-          ),
-        );
-      }
-    }
-
-    class CustomCircularProgress extends StatelessWidget {
-      const CustomCircularProgress({Key? key}) : super(key: key);
-
-      @override
-      Widget build(BuildContext context) {
-        return SizedBox(
-          height: 120.0,
-          width: 120.0,
-          child: CustomPaint(
-            painter: CircularProgressPainter(),
-          ),
-        );
-      }
-    }
-
-    class CircularProgressPainter extends CustomPainter {
-      @override
-      void paint(Canvas canvas, Size size) {
-        final Paint paint = Paint()
-          ..color = Colors.blue
-          ..strokeWidth = 24.0
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round;
-
-        final double radius = size.width * 0.45;
-
-        canvas.drawCircle(Offset(radius, radius), radius, paint);
-        canvas.drawArc(
-          Rect.fromCircle(center: Offset(radius, radius), radius: radius),
-          math.pi / 2,
-          math.pi * 1.5,
-          false,
-          paint..color = Colors.green,
-        );
-      }
-
-      @override
-      bool shouldRepaint(CustomPainter oldDelegate) {
-        return false;
-      }
-    }
-
-    class _LegendItem extends StatelessWidget {
-      final Color color;
-      final String text;
-
-      const _LegendItem({Key? key, required this.color, required this.text})
-          : super(key: key);
-
-      @override
-      Widget build(BuildContext context) {
-        return Row(
-          children: [
-            Container(
-              width: 15.0,
-              height: 15.0,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(15),
+                ),
               ),
             ),
-            const SizedBox(width: 8.0),
-            Text(text),
+            // ...Other form fields or widgets
           ],
-        );
-      }
-    }
+        ),
+      ),
+    );
+  }
+}
+''',
+);
+
+final _solicitudBecas = Sample(
+  category: 'Flutter',
+  name: 'Formulario de Solicitud de Becas',
+  id: 'scholarship-application-form',
+  source: r'''
+import 'package:flutter/material.dart';
+
+const Map<String, Color> colorPalette = {
+  'primary': Color(0xFFa8e6cf), // Light Green
+  'secondary': Color(0xFFdcedc1), // Light Green Accent
+  'accent': Color(0xFFffaaa5), // Soft Red
+  'background': Color(0xFFffd3b6), // Light Orange
+};
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Solicitud de Beca',
+      theme: ThemeData(
+        colorScheme: ColorScheme.light(
+          primary: colorPalette['primary']!,
+          secondary: colorPalette['secondary']!,
+          surface: colorPalette['accent']!,
+          background: colorPalette['background']!,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.9),
+        ),
+      ),
+      home: const ScholarshipApplicationForm(),
+    );
+  }
+}
+
+class ScholarshipApplicationForm extends StatefulWidget {
+  const ScholarshipApplicationForm({Key? key}) : super(key: key);
+
+  @override
+  _ScholarshipApplicationFormState createState() => _ScholarshipApplicationFormState();
+}
+
+class _ScholarshipApplicationFormState extends State<ScholarshipApplicationForm> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _gradeController = TextEditingController();
+  final TextEditingController _essayController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _isGradeValid(String grade) {
+    // Add your validation logic here for grades
+    return true; // dummy return
+  }
+
+  bool _isEssayValid(String essay) {
+    // Add your validation logic here for personal essay
+    return true; // dummy return
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Formulario de Solicitud de Beca'),
+        backgroundColor: colorPalette['primary'],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nombre Completo',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa tu nombre completo.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _gradeController,
+                decoration: const InputDecoration(
+                  labelText: 'Calificación Promedio',
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (!_isGradeValid(value ?? '')) {
+                    return 'Introduce una calificación válida.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _essayController,
+                decoration: const InputDecoration(
+                  labelText: 'Ensayo Personal',
+                ),
+                maxLines: 5,
+                validator: (value) {
+                  if (!_isEssayValid(value ?? '')) {
+                    return 'Introduce un ensayo válido.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+              // file bottom
+              Row(
+                children: [
+                  Icon(
+                    Icons.attach_file,
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Adjuntar Archivo',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.surface,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              CustomElevatedButton(
+                text: 'Enviar',
+                color: Theme.of(context).colorScheme.primary,
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {}
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _gradeController.dispose();
+    _essayController.dispose();
+    super.dispose();
+  }
+}
+
+class CustomElevatedButton extends StatelessWidget {
+  final String text;
+  final Color color;
+  final VoidCallback onPressed;
+
+  const CustomElevatedButton({
+    Key? key,
+    required this.text,
+    required this.color,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 48,
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          backgroundColor: color,
+        ),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 18),
+        ),
+      ),
+    );
+  }
+}
 ''',
 );

@@ -10,6 +10,7 @@ import 'package:dartpad_shared/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:provider/provider.dart';
 import 'package:split_view/split_view.dart';
@@ -21,6 +22,8 @@ import 'execution/execution.dart';
 import 'extensions.dart';
 import 'keys.dart' as keys;
 import 'model.dart';
+import 'pages/login_page.dart';
+import 'pages/register_page.dart';
 import 'samples.g.dart';
 import 'services/gpt_api_service.dart';
 import 'theme.dart';
@@ -49,13 +52,17 @@ class DartPadApp extends StatefulWidget {
 }
 
 class _DartPadAppState extends State<DartPadApp> {
+  bool isLogged = false;
   late final GoRouter router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/login',
     routes: [
       GoRoute(
-        path: '/',
-        builder: _homePageBuilder,
+        path: '/home',
+        builder: (context, state) => _homePageBuilder(context, state),
       ),
+      GoRoute(
+          path: '/register', builder: (context, state) => const RegisterPage()),
+      GoRoute(path: '/login', builder: (context, state) => LoginPage()),
     ],
   );
 
@@ -192,8 +199,13 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
   final _formKey = GlobalKey<FormState>();
   late AppModel appModel;
   late AppServices appServices;
-  final List<String> previewModes = ['iOS', 'Android'];
+  final List<String> previewModes = [
+    'iOS - iPhone 12',
+    'iOS - iPhone 14',
+    'Android - Pixel 5'
+  ];
   String? selectedPreviewMode;
+  String username = '';
 
   @override
   void initState() {
@@ -221,6 +233,7 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
       gistId: widget.gistId,
       fallbackSnippet: Samples.getDefault(type: 'dart'),
     );
+    _getUserName();
   }
 
   @override
@@ -263,6 +276,28 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
         appModel.sourceCodeController.text, palette);
   }
 
+  Widget _logOutButton() {
+    return SizedBox(
+      height: toolbarItemHeight,
+      child: TextButton.icon(
+        icon: const Icon(Icons.logout),
+        label: const Text('Cerrar sesión'),
+        onPressed: () {
+          GoRouter.of(context).go('/login');
+        },
+      ),
+    );
+  }
+
+  Future<void> _getUserName() async {
+    final LocalStorage storage = LocalStorage('user');
+    await storage.ready;
+    final username = storage.getItem('username');
+    setState(() {
+      this.username = username as String;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -285,11 +320,13 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                 ),
               ),
               actions: [
+                Text('Bienvenido $username'),
                 const SizedBox(width: denseSpacing),
                 _BrightnessButton(
                   handleBrightnessChange: widget.handleBrightnessChanged,
                 ),
-                // const OverflowMenu(),
+                const SizedBox(width: denseSpacing),
+                _logOutButton(),
               ],
             ),
       body: Column(
@@ -325,7 +362,7 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                                       border: OutlineInputBorder(),
                                       floatingLabelBehavior:
                                           FloatingLabelBehavior.never,
-                                      labelText: 'Prompt',
+                                      labelText: 'Instrucción...',
                                       contentPadding:
                                           EdgeInsets.all(defaultGripSize)),
                                 ),
@@ -419,11 +456,6 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                         builder: (context, LayoutMode mode, _) {
                           return LayoutBuilder(builder: (BuildContext context,
                               BoxConstraints constraints) {
-                            final domHeight =
-                                mode.calcDomHeight(constraints.maxHeight);
-                            final consoleHeight =
-                                mode.calcConsoleHeight(constraints.maxHeight);
-
                             return Column(
                               children: [
                                 Container(
@@ -436,8 +468,10 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                                       builder: (context, _) {
                                         return ExecutionWidget(
                                           appServices: appServices,
-                                          // Ignore pointer events while the Splitter
-                                          // is being dragged.
+                                          selectedPreviewMode:
+                                              selectedPreviewMode != null
+                                                  ? selectedPreviewMode!
+                                                  : 'Android',
                                           ignorePointer: appModel
                                                   .splitViewDragState.value ==
                                               SplitDragState.active,
@@ -453,7 +487,6 @@ class _DartPadMainPageState extends State<DartPadMainPage> {
                         valueListenable: appModel.compilingBusy,
                         builder: (_, bool compiling, __) {
                           final color = theme.colorScheme.surface;
-
                           return AnimatedContainer(
                             color: compiling
                                 ? color.withOpacity(0.8)
@@ -880,71 +913,6 @@ class SelectChannelWidget extends StatelessWidget {
     appServices.appModel.editorStatus.showToast(
       'Switched to Dart ${version.dartVersion} '
       'and Flutter ${version.flutterVersion}',
-    );
-  }
-}
-
-class OverflowMenu extends StatelessWidget {
-  const OverflowMenu({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.more_vert),
-      splashRadius: defaultSplashRadius,
-      onPressed: () async {
-        final selection =
-            await _showMenu(context, calculatePopupMenuPosition(context));
-        if (selection != null) {
-          url_launcher.launchUrl(Uri.parse(selection));
-        }
-      },
-    );
-  }
-
-  Future<String?> _showMenu(BuildContext context, RelativeRect position) {
-    return showMenu<String?>(
-      context: context,
-      position: position,
-      items: <PopupMenuEntry<String?>>[
-        PopupMenuItem(
-          value: 'https://dart.dev',
-          child: PointerInterceptor(
-            child: const ListTile(
-              title: Text('dart.dev'),
-              trailing: Icon(Icons.launch),
-            ),
-          ),
-        ),
-        PopupMenuItem(
-          value: 'https://flutter.dev',
-          child: PointerInterceptor(
-            child: const ListTile(
-              title: Text('flutter.dev'),
-              trailing: Icon(Icons.launch),
-            ),
-          ),
-        ),
-        const PopupMenuDivider(),
-        PopupMenuItem(
-          value: 'https://github.com/dart-lang/dart-pad/wiki/Sharing-Guide',
-          child: PointerInterceptor(
-            child: const ListTile(
-              title: Text('Sharing guide'),
-              trailing: Icon(Icons.launch),
-            ),
-          ),
-        ),
-        PopupMenuItem(
-          value: 'https://github.com/dart-lang/dart-pad',
-          child: PointerInterceptor(
-            child: const ListTile(
-              title: Text('DartPad on GitHub'),
-              trailing: Icon(Icons.launch),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
